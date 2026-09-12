@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{{ title }}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="d-flex min-vh-100">
+
+    <!-- Left Navigation -->
+
+    <div class="bg-dark text-white p-4" style="width: 250px;">
+
+        <h3 class="mb-4">Trekking Management</h3>
+
+        <p class="text-secondary">User Panel</p>
+
+        <div class="nav flex-column">
+
+            <a href="{{ url_for('user_dashboard') }}" class="nav-link text-white mb-2">
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('browse_treks') }}" class="nav-link text-white mb-2">
+                Browse Treks
+            </a>
+
+            <a href="{{ url_for('my_bookings') }}" class="nav-link text-white mb-2">
+                My Bookings
+            </a>
+
+            <a href="{{ url_for('booking_history') }}" class="nav-link text-white mb-2">
+                History
+            </a>
+
+            <a href="{{ url_for('edit_profile') }}" class="nav-link text-white mb-2">
+                Profile
+            </a>
+
+        </div>
+
+        <hr>
+
+        <a href="{{ url_for('logout') }}" class="btn btn-danger w-100">
+            Logout
+        </a>
+
+    </div>
+
+
+    <!-- Main Content -->
+
+    <div class="flex-grow-1">
+
+        <div class="container-fluid p-5">
+
+            {% with messages = get_flashed_messages() %} 
+                {% if messages %} 
+                    {% for message in messages %} 
+                        <div style=" 
+                            background: #d4edda; 
+                            color: #155724; 
+                            padding: 10px; 
+                            margin-bottom: 15px; 
+                            text-align: center;
+                            border-radius: 5px; 
+                        "> 
+                            {{ message }} 
+                        </div> 
+                    {% endfor %} 
+                {% endif %} 
+            {% endwith %}
+
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+
+                <div>
+
+                    <h1>{{ trek.name }}</h1>
+
+                    <p class="text-muted mb-0">
+                        {{ trek.location }}
+                    </p>
+
+                </div>
+
+                <a
+                    href="{{ url_for('browse_treks') }}"
+                    class="btn btn-outline-secondary"
+                >
+                    Back to Treks
+                </a>
+
+            </div>
+
+
+            <div class="card shadow-sm mb-4">
+
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Trek Details</h5>
+                </div>
+
+                <div class="card-body">
+
+                    <div class="row mb-4">
+
+                        <div class="col-md-4">
+                            <strong>Location</strong>
+                            <p>{{ trek.location }}</p>
+                        </div>
+
+                        <div class="col-md-4">
+                            <strong>Difficulty</strong>
+                            <p>{{ trek.difficulty }}</p>
+                        </div>
+
+                        <div class="col-md-4">
+                            <strong>Duration</strong>
+                            <p>{{ trek.duration }}</p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="row mb-4">
+
+                        <div class="col-md-4">
+                            <strong>Start Date</strong>
+                            <p>{{ trek.start_date.strftime("%d/%m/%Y") }}</p>
+                        </div>
+
+                        <div class="col-md-4">
+                            <strong>End Date</strong>
+                            <p>{{ trek.end_date.strftime("%d/%m/%Y") }}</p>
+                        </div>
+
+                        <div class="col-md-4">
+                            <strong>Available Slots</strong>
+                            <p>{{ trek.available_slots }} / {{ trek.total_slots }}</p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="mb-4">
+
+                        <strong>Description</strong>
+
+                        <p class="mt-2">
+                            {{ trek.description }}
+                        </p>
+
+                    </div>
+
+
+                    <div>
+
+                        <strong>Status</strong>
+
+                        <p class="mt-2">
+
+                            {% if trek.status == "Open" %}
+
+                                <span class="badge bg-success">
+                                    Open
+                                </span>
+
+                            {% elif trek.status == "Completed" %}
+
+                                <span class="badge bg-secondary">
+                                    Completed
+                                </span>
+
+                            {% elif trek.status == "Closed" %}
+
+                                <span class="badge bg-danger">
+                                    Closed
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-warning text-dark">
+                                    {{ trek.status }}
+                                </span>
+
+                            {% endif %}
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Booking Action -->
+
+            <div class="card shadow-sm">
+
+                <div class="card-body">
+
+                    <h5 class="mb-3">Booking</h5>
+
+                    {% if booking_status == "Booked" %}
+
+                        <span class="badge bg-secondary fs-6">
+                            Already Booked
+                        </span>
+
+                    {% elif booking_status == "Completed" %}
+
+                        <span class="badge bg-success fs-6">
+                            Completed
+                        </span>
+
+                    {% elif trek.available_slots == 0 %}
+
+                        <span class="badge bg-danger fs-6">
+                            Full
+                        </span>
+
+                    {% elif trek.status == "Completed" %}
+
+                        <span class="badge bg-secondary fs-6">
+                            Completed
+                        </span>
+
+                    {% elif trek.status == "Closed" %}
+
+                        <span class="badge bg-danger fs-6">
+                            Booking Closed
+                        </span>
+
+                    {% else %}
+
+                        <form
+                            action="{{ url_for('book_trek', trek_id=trek.id) }}"
+                            method="POST"
+                        >
+
+                            <button
+                                type="submit"
+                                class="btn btn-success"
+                            >
+                                Book Trek
+                            </button>
+
+                        </form>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

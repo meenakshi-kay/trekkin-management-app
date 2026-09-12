@@ -1,0 +1,259 @@
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+<div class="d-flex min-vh-100">
+
+
+    <!-- Sidebar -->
+		<div class="bg-dark text-white p-4" style="width: 250px;">
+
+			<h3 class="mb-4">Trekking Management</h3>
+
+			<p class="text-secondary">Admin Panel</p>
+
+			<div class="nav flex-column">
+
+				<a href="{{ url_for('admin_dashboard') }}" class="nav-link text-white mb-2">
+					Dashboard
+				</a>
+
+				<a href="{{ url_for('manage_treks') }}" class="nav-link text-white mb-2">
+					Treks
+				</a>
+
+				<a href="{{ url_for('manage_staff') }}" class="nav-link text-white mb-2">
+					Staff
+				</a>
+
+				<a href="{{ url_for('manage_users') }}" class="nav-link text-white mb-2">
+					Users
+				</a>
+
+				<a href="{{ url_for('admin_bookings') }}" class="nav-link text-white mb-2">
+					Bookings
+				</a>
+
+				<a href="{{ url_for('admin_report') }}" class="nav-link text-white mb-2">
+					Report
+				</a>
+
+				<a href="{{ url_for('admin_settings') }}" class="nav-link text-white mb-2">
+					Settings
+				</a>
+
+			</div>
+
+			<hr>
+
+			<a href="{{ url_for('logout') }}" class="btn btn-danger w-100">
+				Logout
+			</a>
+
+		</div>
+
+
+
+    <!-- Main Content -->
+
+    <div class="flex-grow-1 p-5">
+
+
+        {% with messages = get_flashed_messages() %} 
+            {% if messages %} 
+                {% for message in messages %} 
+                    <div style=" 
+                        background: #d4edda; 
+                        text-align: center;
+                        color: #155724; 
+                        padding: 10px; 
+                        margin-bottom: 15px; 
+                        border-radius: 5px; 
+                    "> 
+                        {{ message }} 
+                    </div> 
+                {% endfor %} 
+            {% endif %} 
+        {% endwith %}
+
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <div>
+                <h1>Add Trek</h1>
+
+                <p class="text-muted mb-0">
+                    Logged in as {{ current_user.name }}
+                </p>
+            </div>
+
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
+                Back to Dashboard
+            </a>
+
+        </div>
+
+
+        <div class="card shadow-sm">
+
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Trek Details</h5>
+            </div>
+
+            <div class="card-body">
+
+                <form method="POST">
+
+                    <div class="mb-3">
+                        <label class="form-label">Trek Name</label>
+
+                        <input
+                            type="text"
+                            name="name"
+                            class="form-control"
+                            required
+                        >
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label class="form-label">Location</label>
+
+                        <input
+                            type="text"
+                            name="location"
+                            class="form-control"
+                            required
+                        >
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label class="form-label">Difficulty</label>
+
+                        <select name="difficulty" class="form-select" required>
+
+                            <option value="">Select difficulty</option>
+
+                            <option value="Easy">
+                                Easy
+                            </option>
+
+                            <option value="Moderate">
+                                Moderate
+                            </option>
+
+                            <option value="Hard">
+                                Hard
+                            </option>
+
+                        </select>
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label class="form-label">Assigned Staff</label>
+
+                        <select name="assigned_staff_id" class="form-select" required>
+
+                            <option value="">
+                                Select staff member
+                            </option>
+
+                            {% for staff in staff_members %}
+
+                                <option value="{{ staff.id }}">
+                                    {{ staff.name }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+                    </div>
+
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Start Date
+                            </label>
+
+                            <input
+                                type="date"
+                                name="start_date"
+                                class="form-control"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                End Date
+                            </label>
+
+                            <input
+                                type="date"
+                                name="end_date"
+                                class="form-control"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Description
+                        </label>
+
+                        <textarea
+                            name="description"
+                            class="form-control"
+                            rows="4"
+                            required
+                        ></textarea>
+
+                    </div>
+
+
+                    <div class="mb-4">
+
+                        <label class="form-label">
+                            Total Slots
+                        </label>
+
+                        <input
+                            type="number"
+                            name="total_slots"
+                            class="form-control"
+                            min="1"
+                            required
+                        >
+
+                    </div>
+
+
+                    <button type="submit" class="btn btn-success">
+                        Add Trek
+                    </button>
+
+                    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary ms-2">
+                        Cancel
+                    </a>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

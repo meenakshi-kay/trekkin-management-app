@@ -1,0 +1,195 @@
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+<div class="d-flex min-vh-100">
+
+
+
+    <!-- Sidebar -->
+		<div class="bg-dark text-white p-4" style="width: 250px;">
+
+			<h3 class="mb-4">Trekking Management</h3>
+
+			<p class="text-secondary">Admin Panel</p>
+
+			<div class="nav flex-column">
+
+				<a href="{{ url_for('admin_dashboard') }}" class="nav-link text-white mb-2">
+					Dashboard
+				</a>
+
+				<a href="{{ url_for('manage_treks') }}" class="nav-link text-white mb-2">
+					Treks
+				</a>
+
+				<a href="{{ url_for('manage_staff') }}" class="nav-link text-white mb-2">
+					Staff
+				</a>
+
+				<a href="{{ url_for('manage_users') }}" class="nav-link text-white mb-2">
+					Users
+				</a>
+
+				<a href="{{ url_for('admin_bookings') }}" class="nav-link text-white mb-2">
+					Bookings
+				</a>
+
+				<a href="{{ url_for('admin_report') }}" class="nav-link text-white mb-2">
+					Report
+				</a>
+
+				<a href="{{ url_for('admin_settings') }}" class="nav-link text-white mb-2">
+					Settings
+				</a>
+
+			</div>
+
+			<hr>
+
+			<a href="{{ url_for('logout') }}" class="btn btn-danger w-100">
+				Logout
+			</a>
+
+		</div>
+
+
+
+    <!-- Main Content -->
+
+    <div class="flex-grow-1 p-5">
+
+        {% with messages = get_flashed_messages() %} 
+            {% if messages %} 
+                {% for message in messages %} 
+                    <div style=" 
+                        background: #d4edda; 
+                        color: #155724; 
+                        text-align: center;
+                        padding: 10px; 
+                        margin-bottom: 15px; 
+                        border-radius: 5px; 
+                    "> 
+                        {{ message }} 
+                    </div> 
+                {% endfor %} 
+            {% endif %} 
+        {% endwith %}
+
+
+        <h1 class="mb-4">Manage Treks</h1>
+
+
+        <form method="GET" class="mb-3">
+
+            <div class="input-group" style="max-width: 500px;">
+
+                <input
+                    type="text"
+                    name="search"
+                    class="form-control"
+                    placeholder="Search by trek name or ID"
+                    value="{{ request.args.get('search', '') }}"
+                >
+
+                <button type="submit" class="btn btn-primary">
+                    Search
+                </button>
+
+            </div>
+
+        </form>
+
+
+        <a href="{{ url_for('add_trek') }}" class="btn btn-success mb-4">
+            Add New Trek
+        </a>
+
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered table-striped table-hover align-middle">
+
+                <thead class="table-dark">
+
+                    <tr>
+                        <th>ID</th>
+                        <th>Trek Name</th>
+                        <th>Location</th>
+                        <th>Difficulty</th>
+                        <th>Duration</th>
+                        <th>Total Slots</th>
+                        <th>Available Slots</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Assigned Staff</th>
+                        <th>Actions</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for trek in treks %}
+
+                    <tr>
+
+                        <td>{{ trek.id }}</td>
+                        <td>{{ trek.name }}</td>
+                        <td>{{ trek.location }}</td>
+                        <td>{{ trek.difficulty }}</td>
+                        <td>{{ trek.duration }}</td>
+                        <td>{{ trek.total_slots }}</td>
+                        <td>{{ trek.available_slots }}</td>
+                        <td>{{ trek.start_date.strftime("%d/%m/%Y") }}</td>
+                        <td>{{ trek.end_date.strftime("%d/%m/%Y") }}</td>
+                        <td>{{ trek.assigned_staff.name }}</td>
+
+                        <td>
+
+                            <div class="d-flex gap-2">
+
+                                <a href="{{ url_for('edit_trek', trek_id=trek.id) }}" class="btn btn-sm btn-primary">
+                                    Edit
+                                </a>
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for('delete_trek', trek_id=trek.id) }}"
+                                    onsubmit="return confirm('Are you sure you want to delete this trek?');"
+                                >
+
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        Delete
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+
+                    {% else %}
+
+                    <tr>
+
+                        <td colspan="11" class="text-center">
+                            No treks found
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>

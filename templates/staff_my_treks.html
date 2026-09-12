@@ -1,0 +1,207 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+<div class="d-flex min-vh-100">
+
+
+	<!-- Left Navigation -->
+
+	<div class="bg-dark text-white p-4" style="width: 250px;">
+
+		<h3 class="mb-4">Trekking Management</h3>
+
+		<p class="text-secondary">Staff Panel</p>
+
+		<div class="nav flex-column">
+
+			<a href="{{ url_for('staff_dashboard') }}" class="nav-link text-white mb-2">
+				Dashboard
+			</a>
+
+			<a href="{{ url_for('staff_my_treks') }}" class="nav-link text-white mb-2">
+				My Treks
+			</a>
+
+			<a href="{{ url_for('staff_participants') }}" class="nav-link text-white mb-2">
+				Participants
+			</a>
+
+			<a href="{{ url_for('edit_profile') }}" class="nav-link text-white mb-2">
+				Profile
+			</a>
+
+		</div>
+
+		<hr>
+
+		<a href="{{ url_for('logout') }}" class="btn btn-danger w-100">
+			Logout
+		</a>
+
+	</div>
+
+
+	<!-- Main Content -->
+
+	<div class="flex-grow-1">
+
+		<div class="container-fluid p-5">
+
+
+			{% with messages = get_flashed_messages() %} 
+				{% if messages %} 
+					{% for message in messages %} 
+						<div style=" 
+							background: #d4edda; 
+							color: #155724; 
+							padding: 10px; 
+							margin-bottom: 15px; 
+							text-align: center;
+							border-radius: 5px; 
+						"> 
+							{{ message }} 
+						</div> 
+					{% endfor %} 
+				{% endif %} 
+			{% endwith %}
+
+
+			<div class="d-flex justify-content-between align-items-center mb-4">
+
+				<div>
+
+					<h1>My Treks</h1>
+
+					<p class="text-muted mb-0">
+						Treks assigned to {{ current_user.name }}
+					</p>
+
+				</div>
+
+			</div>
+
+
+			{% if treks %}
+
+			<div class="row g-4">
+
+				{% for trek in treks %}
+
+				<div class="col-md-6 col-lg-4">
+
+					<div class="card shadow-sm h-100">
+
+						<div class="card-body">
+
+							<h4 class="card-title">
+								{{ trek.name }}
+							</h4>
+
+							<p class="text-muted mb-2">
+								{{ trek.location }}
+							</p>
+
+
+							<p class="mb-2">
+
+								<strong>Difficulty:</strong>
+								{{ trek.difficulty }}
+
+							</p>
+
+
+							<p class="mb-2">
+
+								<strong>Duration:</strong>
+								{{ trek.duration }}
+
+							</p>
+
+
+							<p class="mb-3">
+
+								<strong>Participants:</strong>
+
+								<span class="badge bg-primary">
+									{{ participant_counts[trek.id] }}/{{ trek.total_slots }}
+								</span>
+
+							</p>
+
+
+							<p class="mb-3">
+
+								<strong>Status:</strong>
+
+								{% if trek.status == "Open" %}
+
+									<span class="badge bg-success">
+										Open
+									</span>
+
+								{% elif trek.status == "Started" %}
+
+									<span class="badge bg-warning text-dark">
+										Started
+									</span>
+
+								{% elif trek.status == "Completed" %}
+
+									<span class="badge bg-secondary">
+										Completed
+									</span>
+
+								{% else %}
+
+									<span class="badge bg-info">
+										{{ trek.status }}
+									</span>
+
+								{% endif %}
+
+							</p>
+
+
+							<div class="d-flex gap-2">
+
+								<a href="{{ url_for('view_staff_trek', trek_id=trek.id) }}" class="btn btn-primary">
+									View Trek
+								</a>
+
+								<a href="{{ url_for('update_trek', trek_id=trek.id) }}" class="btn btn-warning">
+									Update Trek
+								</a>
+
+							</div>
+
+						</div>
+
+					</div>
+
+				</div>
+
+				{% endfor %}
+
+			</div>
+
+
+			{% else %}
+
+			<div class="alert alert-info">
+				No treks are currently assigned to you.
+			</div>
+
+			{% endif %}
+
+
+		</div>
+
+	</div>
+
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>

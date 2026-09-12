@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{{ title }}</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+</head>
+
+
+<body class="bg-light">
+
+
+<div class="d-flex min-vh-100">
+
+
+    <!-- Sidebar -->
+		<div class="bg-dark text-white p-4" style="width: 250px;">
+
+			<h3 class="mb-4">Trekking Management</h3>
+
+			<p class="text-secondary">Admin Panel</p>
+
+			<div class="nav flex-column">
+
+				<a href="{{ url_for('admin_dashboard') }}" class="nav-link text-white mb-2">
+					Dashboard
+				</a>
+
+				<a href="{{ url_for('manage_treks') }}" class="nav-link text-white mb-2">
+					Treks
+				</a>
+
+				<a href="{{ url_for('manage_staff') }}" class="nav-link text-white mb-2">
+					Staff
+				</a>
+
+				<a href="{{ url_for('manage_users') }}" class="nav-link text-white mb-2">
+					Users
+				</a>
+
+				<a href="{{ url_for('admin_bookings') }}" class="nav-link text-white mb-2">
+					Bookings
+				</a>
+
+				<a href="{{ url_for('admin_report') }}" class="nav-link text-white mb-2">
+					Report
+				</a>
+
+				<a href="{{ url_for('admin_settings') }}" class="nav-link text-white mb-2">
+					Settings
+				</a>
+
+			</div>
+            <hr>
+        
+			<a href="{{ url_for('logout') }}" class="btn btn-danger w-100">
+				Logout
+			</a>
+        </div>
+
+    <!-- Main Content -->
+
+    <div class="flex-grow-1 p-5">
+
+
+        {% with messages = get_flashed_messages() %} 
+            {% if messages %} 
+                {% for message in messages %} 
+                    <div style=" 
+                        background: #d4edda; 
+                        text-align: center;
+                        color: #155724; 
+                        padding: 10px; 
+                        margin-bottom: 15px; 
+                        border-radius: 5px; 
+                    "> 
+                        {{ message }} 
+                    </div> 
+                {% endfor %} 
+            {% endif %} 
+        {% endwith %}
+
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <div>
+
+                <h1>Reports</h1>
+
+                <p class="text-muted mb-0">
+                    Overview of trekking activity and bookings.
+                </p>
+
+            </div>
+
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
+                Back to Dashboard
+            </a>
+
+        </div>
+
+
+        <!-- Overview Statistics -->
+
+        <h3 class="mb-3">Overview</h3>
+
+        <div class="row g-3 mb-5">
+
+
+            <div class="col-md-3">
+
+                <div class="card text-center shadow-sm">
+
+                    <div class="card-body">
+
+                        <h6 class="text-muted">
+                            Total Treks
+                        </h6>
+
+                        <h2>
+                            {{ total_treks }}
+                        </h2>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-3">
+
+                <div class="card text-center shadow-sm">
+
+                    <div class="card-body">
+
+                        <h6 class="text-muted">
+                            Total Bookings
+                        </h6>
+
+                        <h2>
+                            {{ total_bookings }}
+                        </h2>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-3">
+
+                <div class="card text-center shadow-sm">
+
+                    <div class="card-body">
+
+                        <h6 class="text-muted">
+                            Total Users
+                        </h6>
+
+                        <h2>
+                            {{ total_users }}
+                        </h2>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-3">
+
+                <div class="card text-center shadow-sm">
+
+                    <div class="card-body">
+
+                        <h6 class="text-muted">
+                            Total Staff
+                        </h6>
+
+                        <h2>
+                            {{ total_staff }}
+                        </h2>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- Booking Summary -->
+
+        <h3 class="mb-3">Booking Summary</h3>
+
+        <div class="row g-3 mb-5">
+
+
+            <div class="col-md-4">
+
+                <div class="card shadow-sm">
+
+                    <div class="card-body">
+
+                        <h5 class="text-success">
+                            Booked
+                        </h5>
+
+                        <h2>
+                            {{ booked_count }}
+                        </h2>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="card shadow-sm">
+
+                    <div class="card-body">
+
+                        <h5 class="text-danger">
+                            Cancelled
+                        </h5>
+
+                        <h2>
+                            {{ cancelled_count }}
+                        </h2>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="card shadow-sm">
+
+                    <div class="card-body">
+
+                        <h5 class="text-secondary">
+                            Completed
+                        </h5>
+
+                        <h2>
+                            {{ completed_count }}
+                        </h2>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- Trek Booking Report -->
+
+        <h3 class="mb-3">Trek Booking Report</h3>
+
+        <div class="table-responsive mb-5">
+
+            <table class="table table-bordered table-striped table-hover align-middle">
+
+                <thead class="table-dark">
+
+                    <tr>
+                        <th>Trek</th>
+                        <th>Total Bookings</th>
+                        <th>Available Slots</th>
+                        <th>Status</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for report in trek_reports %}
+
+                    <tr>
+
+                        <td>
+                            {{ report.trek.name }}
+                        </td>
+
+                        <td>
+                            {{ report.booking_count }}
+                        </td>
+
+                        <td>
+                            {{ report.trek.available_slots }}
+                        </td>
+
+                        <td>
+
+                            {% if report.trek.status == "Open" %}
+
+                                <span class="badge bg-success">
+                                    Open
+                                </span>
+
+                            {% elif report.trek.status == "Closed" %}
+
+                                <span class="badge bg-danger">
+                                    Closed
+                                </span>
+
+                            {% elif report.trek.status == "Completed" %}
+
+                                <span class="badge bg-secondary">
+                                    Completed
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-warning text-dark">
+                                    {{ report.trek.status }}
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+
+                    {% else %}
+
+                    <tr>
+
+                        <td colspan="4" class="text-center py-4">
+                            No trek data available.
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- Staff Assignment Report -->
+
+        <h3 class="mb-3">Staff Assignment Report</h3>
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered table-striped table-hover align-middle">
+
+                <thead class="table-dark">
+
+                    <tr>
+                        <th>Trek</th>
+                        <th>Assigned Staff</th>
+                        <th>Participants</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for report in staff_reports %}
+
+                    <tr>
+
+                        <td>
+                            {{ report.trek.name }}
+                        </td>
+
+                        <td>
+                            {{ report.trek.assigned_staff.name }}
+                        </td>
+
+                        <td>
+                            {{ report.participant_count }}
+                        </td>
+
+                    </tr>
+
+
+                    {% else %}
+
+                    <tr>
+
+                        <td colspan="3" class="text-center py-4">
+                            No staff assignment data available.
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

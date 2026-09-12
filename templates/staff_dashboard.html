@@ -1,0 +1,327 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+<div class="d-flex min-vh-100">
+
+
+	<!-- Left Navigation -->
+
+	<div class="bg-dark text-white p-4" style="width: 250px;">
+
+		<h3 class="mb-4">Trekking Management</h3>
+
+		<p class="text-secondary">Staff Panel</p>
+
+		<div class="nav flex-column">
+
+			<a href="{{ url_for('staff_dashboard') }}" class="nav-link text-white mb-2">
+				Dashboard
+			</a>
+
+			<a href="{{ url_for('staff_my_treks') }}" class="nav-link text-white mb-2">
+				My Treks
+			</a>
+
+			<a href="{{ url_for('staff_participants') }}" class="nav-link text-white mb-2">
+				Participants
+			</a>
+
+			<a href="{{ url_for('edit_profile') }}" class="nav-link text-white mb-2">
+				Profile
+			</a>
+
+		</div>
+
+		<hr>
+
+		<a href="{{ url_for('logout') }}" class="btn btn-danger w-100">
+			Logout
+		</a>
+
+	</div>
+
+
+	<!-- Main Content -->
+
+	<div class="flex-grow-1">
+
+		<div class="container-fluid p-5">
+
+
+			{% with messages = get_flashed_messages() %} 
+				{% if messages %} 
+					{% for message in messages %} 
+						<div style=" 
+							background: #d4edda; 
+							color: #155724; 
+							padding: 10px; 
+							margin-bottom: 15px; 
+							text-align: center;
+							border-radius: 5px; 
+						"> 
+							{{ message }} 
+						</div> 
+					{% endfor %} 
+				{% endif %} 
+			{% endwith %}
+
+
+			<!-- Dashboard Heading -->
+
+			<div class="d-flex justify-content-between align-items-center mb-4">
+
+				<div>
+
+					<h1>Staff Dashboard</h1>
+
+					<p class="text-muted mb-0">
+						Welcome, {{ current_user.name }}
+					</p>
+
+				</div>
+
+			</div>
+
+
+			<!-- Statistics -->
+
+			<h3 class="mb-3">Statistics</h3>
+
+			<div class="row g-3 mb-5">
+
+
+				<div class="col-md-3">
+
+					<div class="card text-center shadow-sm">
+
+						<div class="card-body">
+
+							<h5>Assigned Treks</h5>
+
+							<h2>{{ total_treks }}</h2>
+
+						</div>
+
+					</div>
+
+				</div>
+
+
+				<div class="col-md-3">
+
+					<div class="card text-center shadow-sm">
+
+						<div class="card-body">
+
+							<h5>Upcoming Treks</h5>
+
+							<h2>{{ upcoming_treks }}</h2>
+
+						</div>
+
+					</div>
+
+				</div>
+
+
+				<div class="col-md-3">
+
+					<div class="card text-center shadow-sm">
+
+						<div class="card-body">
+
+							<h5>Participants</h5>
+
+							<h2>{{ total_participants }}</h2>
+
+						</div>
+
+					</div>
+
+				</div>
+
+
+				<div class="col-md-3">
+
+					<div class="card text-center shadow-sm">
+
+						<div class="card-body">
+
+							<h5>Completed Treks</h5>
+
+							<h2>{{ completed_treks }}</h2>
+
+						</div>
+
+					</div>
+
+				</div>
+
+
+			</div>
+
+
+			<!-- My Treks -->
+
+			<h3 class="mb-3">My Treks</h3>
+
+
+			<form method="GET" class="row g-2 mb-4">
+
+				<div class="col-md-8">
+
+					<input
+						type="text"
+						class="form-control"
+						name="search"
+						placeholder="Search trek..."
+						value="{{ search }}"
+					>
+
+				</div>
+
+
+				<div class="col-md-4">
+
+					<button type="submit" class="btn btn-primary w-100">
+						Search
+					</button>
+
+				</div>
+
+			</form>
+
+
+			<div class="card shadow-sm">
+
+				<div class="card-header bg-success text-white">
+					Assigned Treks
+				</div>
+
+
+				<div class="card-body p-0">
+
+					<div class="table-responsive">
+
+						<table class="table table-striped table-hover mb-0">
+
+							<thead class="table-light">
+
+								<tr>
+									<th>Trek</th>
+									<th>Location</th>
+									<th>Status</th>
+									<th>Participants</th>
+									<th>Action</th>
+								</tr>
+
+							</thead>
+
+
+							<tbody>
+
+								{% for trek in treks %}
+
+								<tr>
+
+
+									<td>
+										{{ trek.name }}
+									</td>
+
+
+									<td>
+										{{ trek.location }}
+									</td>
+
+
+									<td>
+
+										{% if trek.status == "Open" %}
+
+											<span class="badge bg-success">
+												Open
+											</span>
+
+										{% elif trek.status == "Started" %}
+
+											<span class="badge bg-warning text-dark">
+												Started
+											</span>
+
+										{% elif trek.status == "Completed" %}
+
+											<span class="badge bg-secondary">
+												Completed
+											</span>
+
+										{% else %}
+
+											<span class="badge bg-info">
+												{{ trek.status }}
+											</span>
+
+										{% endif %}
+
+									</td>
+
+
+									<td>
+
+										<span class="badge bg-primary">
+											{{ participant_counts[trek.id] }}/{{ trek.total_slots }}
+										</span>
+
+									</td>
+
+
+									<td>
+
+										<a href="{{ url_for('update_trek', trek_id=trek.id) }}" class="btn btn-sm btn-warning">
+											Update Trek
+										</a>
+
+										<a href="{{ url_for('trek_participants', trek_id=trek.id) }}" class="btn btn-sm btn-info">
+											View Participants
+										</a>
+
+									</td>
+
+
+								</tr>
+
+
+								{% else %}
+
+								<tr>
+
+									<td colspan="5" class="text-center py-4">
+										No treks assigjned
+									</td>
+
+								</tr>
+
+								{% endfor %}
+
+							</tbody>
+
+						</table>
+
+					</div>
+
+				</div>
+
+			</div>
+
+
+		</div>
+
+	</div>
+
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>

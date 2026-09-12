@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{{ title }}</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+</head>
+
+
+<body class="bg-light">
+
+
+<div class="d-flex min-vh-100">
+
+
+<!-- Sidebar -->
+		<div class="bg-dark text-white p-4" style="width: 250px;">
+
+			<h3 class="mb-4">Trekking Management</h3>
+
+			<p class="text-secondary">Admin Panel</p>
+
+			<div class="nav flex-column">
+
+				<a href="{{ url_for('admin_dashboard') }}" class="nav-link text-white mb-2">
+					Dashboard
+				</a>
+
+				<a href="{{ url_for('manage_treks') }}" class="nav-link text-white mb-2">
+					Treks
+				</a>
+
+				<a href="{{ url_for('manage_staff') }}" class="nav-link text-white mb-2">
+					Staff
+				</a>
+
+				<a href="{{ url_for('manage_users') }}" class="nav-link text-white mb-2">
+					Users
+				</a>
+
+				<a href="{{ url_for('admin_bookings') }}" class="nav-link text-white mb-2">
+					Bookings
+				</a>
+
+				<a href="{{ url_for('admin_report') }}" class="nav-link text-white mb-2">
+					Report
+				</a>
+
+				<a href="{{ url_for('admin_settings') }}" class="nav-link text-white mb-2">
+					Settings
+				</a>
+
+			</div>
+
+			<hr>
+
+			<a href="{{ url_for('logout') }}" class="btn btn-danger w-100">
+				Logout
+			</a>
+
+		</div>
+
+
+
+    <!-- Main Content -->
+
+    <div class="flex-grow-1 p-5">
+
+
+        {% with messages = get_flashed_messages() %} 
+            {% if messages %} 
+                {% for message in messages %} 
+                    <div style=" 
+                        background: #d4edda; 
+                        text-align: center;
+                        color: #155724; 
+                        padding: 10px; 
+                        margin-bottom: 15px; 
+                        border-radius: 5px; 
+                    "> 
+                        {{ message }} 
+                    </div> 
+                {% endfor %} 
+            {% endif %} 
+        {% endwith %}
+
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <h1>All Bookings</h1>
+
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
+                Back to Dashboard
+            </a>
+
+        </div>
+
+
+        <div class="card shadow-sm">
+
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Booking History</h5>
+            </div>
+
+            <div class="card-body p-0">
+
+                <div class="table-responsive">
+
+                    <table class="table table-striped table-hover mb-0">
+
+                        <thead class="table-light">
+
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>User</th>
+                                <th>Trek</th>
+                                <th>Booking Date</th>
+                                <th>Booking Status</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for booking in bookings %}
+
+                            <tr>
+
+                                <td>{{ booking.id }}</td>
+
+                                <td>{{ booking.user.name }}</td>
+
+                                <td>{{ booking.trek.name }}</td>
+
+                                <td>{{ booking.booking_date }}</td>
+
+                                <td>
+
+                                    {% if booking.status == "Booked" %}
+
+                                        <span class="badge bg-success">
+                                            Booked
+                                        </span>
+
+                                    {% elif booking.status == "Cancelled" %}
+
+                                        <span class="badge bg-danger">
+                                            Cancelled
+                                        </span>
+
+                                    {% elif booking.status == "Completed" %}
+
+                                        <span class="badge bg-secondary">
+                                            Completed
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="badge bg-warning text-dark">
+                                            {{ booking.status }}
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                            </tr>
+
+                            {% else %}
+
+                            <tr>
+
+                                <td colspan="5" class="text-center py-4">
+                                    No bookings found.
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

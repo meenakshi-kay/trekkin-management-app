@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{{ title }}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="d-flex min-vh-100">
+
+    <div class="bg-dark text-white p-4" style="width: 250px;">
+
+        <h3 class="mb-4">Trekking Management</h3>
+
+        <p class="text-secondary">User Panel</p>
+
+        <div class="nav flex-column">
+
+            <a href="{{ url_for('user_dashboard') }}" class="nav-link text-white mb-2">
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('browse_treks') }}" class="nav-link text-white mb-2">
+                Browse Treks
+            </a>
+
+            <a href="{{ url_for('my_bookings') }}" class="nav-link text-white mb-2">
+                My Bookings
+            </a>
+
+            <a href="{{ url_for('booking_history') }}" class="nav-link text-white mb-2">
+                History
+            </a>
+
+            <a href="{{ url_for('edit_profile') }}" class="nav-link text-white mb-2">
+                Profile
+            </a>
+
+        </div>
+
+        <hr>
+
+        <a href="{{ url_for('logout') }}" class="btn btn-danger w-100">
+            Logout
+        </a>
+
+    </div>
+
+
+    <div class="flex-grow-1">
+
+        <div class="container-fluid p-5">
+
+            <h1 class="mb-4">Booking History</h1>
+
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-striped table-hover align-middle">
+
+                    <thead class="table-secondary">
+
+                        <tr>
+                            <th>Trek</th>
+                            <th>Location</th>
+                            <th>Booking Date</th>
+                            <th>Status</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for booking in history %}
+
+                            <tr>
+
+                                <td>{{ booking.trek.name }}</td>
+
+                                <td>{{ booking.trek.location }}</td>
+
+                                <td>{{ booking.booking_date }}</td>
+
+                                <td>{{ booking.status }}</td>
+
+                            </tr>
+
+                        {% else %}
+
+                            <tr>
+
+                                <td colspan="4" class="text-center text-muted py-4">
+                                    No booking history available.
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
